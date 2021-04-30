@@ -23,7 +23,7 @@ func run(cmd wolf.Command) {
 	var (
 		cli      = cmdline.NewParser(cmd.Args()...)
 		help     = cli.Flag("-h, --help")
-		filename = cli.Option("-f", "order file").String("")
+		filename = cli.Option("-f", "patterns file").String("")
 	)
 
 	switch {
