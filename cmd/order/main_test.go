@@ -1,57 +1,65 @@
 package main
 
 import (
-	"bytes"
-	"io/ioutil"
 	"os"
-	"strings"
 	"testing"
+
+	"github.com/gregoryv/wolf"
 )
 
-func Test_cli_bad_filename(t *testing.T) {
-	var out strings.Builder
-	c := &cli{
-		Writer:   &out,
-		Reader:   strings.NewReader("a\nb\n"),
-		filename: "no_such_file",
-	}
-	c.run()
-	exp := "a\nb\n"
-	if out.String() != exp {
-		t.Errorf("\ngot: %q\nexp: %q", out.String(), exp)
-	}
+func Test_main(t *testing.T) {
+	os.Args = []string{"", "--help"}
+	main()
 }
 
-func Test_cli_passthrough(t *testing.T) {
-	var out strings.Builder
-	input := "internal\nREADME\nchangelog.md\nfile.txt\n"
-	c := &cli{
-		Writer:   &out,
-		Reader:   strings.NewReader(input),
-		filename: "",
-	}
-	c.run()
-	exp := "internal\nREADME\nchangelog.md\nfile.txt\n"
-	if out.String() != exp {
-		t.Errorf("\ngot: %q\nexp: %q", out.String(), exp)
-	}
-}
+func Test_run(t *testing.T) {
 
-func Test_cli(t *testing.T) {
-	patterns := "intern.*\n.*ADME\nchangelog.md"
-	tmp, _ := ioutil.TempFile("", "order")
-	tmp.WriteString(patterns)
-	tmp.Close()
-	defer os.RemoveAll(tmp.Name())
-	exp := "internal\nREADME\nchangelog.md\nfile.txt\n"
-	var out bytes.Buffer
-	c := &cli{
-		Writer:   &out,
-		Reader:   strings.NewReader(exp),
-		filename: tmp.Name(),
-	}
-	c.run()
-	if out.String() != exp {
-		t.Errorf("\npatterns: %q\n\ngot:\n%s\nexp:\n%s", patterns, out.String(), exp)
-	}
+	t.Run("--help", func(t *testing.T) {
+		cmd := wolf.NewTCmd("", "--help")
+		defer cmd.Cleanup()
+		run(cmd)
+		if cmd.ExitCode != 0 {
+			t.Error("exit code", cmd.ExitCode)
+		}
+	})
+
+	t.Run("-f no_such_file", func(t *testing.T) {
+		cmd := wolf.NewTCmd("", "-f", "no_such_file")
+		run(cmd)
+		if cmd.ExitCode != 0 {
+			t.Error("exit code", cmd.ExitCode)
+		}
+	})
+
+	t.Run("stdin pass through", func(t *testing.T) {
+		cmd := wolf.NewTCmd()
+		defer cmd.Cleanup()
+		input := "internal\nREADME\nchangelog.md\nfile.txt\n"
+		cmd.In.WriteString(input)
+		run(cmd)
+		if cmd.ExitCode != 0 {
+			t.Error("exit code", cmd.ExitCode)
+		}
+		got := cmd.Out.String()
+		if got != input {
+			t.Errorf("got: %s\nexp: %s", got, input)
+		}
+	})
+
+	t.Run("stdin ordered", func(t *testing.T) {
+		cmd := wolf.NewTCmd("", "-f", "patterns")
+		cmd.In.WriteString("internal\nREADME\nchangelog.md\nfile.txt\n")
+		defer cmd.Cleanup()
+		os.WriteFile("patterns", []byte("intern.*\n.*ADME\nchangelog.md"), 0644)
+		run(cmd)
+		if cmd.ExitCode != 0 {
+			t.Error("exit code", cmd.ExitCode)
+		}
+		got := cmd.Out.String()
+		exp := "internal\nREADME\nchangelog.md\nfile.txt\n"
+		if got != exp {
+			t.Errorf("got: %s\nexp: %s", got, exp)
+		}
+	})
+
 }
