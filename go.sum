@@ -16,8 +16,9 @@ github.com/gregoryv/qual v0.2.1/go.mod h1:5M5kejbZgxtswBGeoXC1yh4CP94W3FFv5o60Bf
 github.com/gregoryv/qual v0.3.1/go.mod h1:dB0ZUMaE5qieQ975kKI7A4CDfg6wgcsPcSlY1SWuq9Y=
 github.com/gregoryv/qual v0.4.0 h1:CqXWXavcX0YRbgMaX/kyY96yZFFbYHg1k1+qXK22HJ8=
 github.com/gregoryv/qual v0.4.0/go.mod h1:dB0ZUMaE5qieQ975kKI7A4CDfg6wgcsPcSlY1SWuq9Y=
-github.com/gregoryv/web v0.16.0 h1:FIvOzI71W4MhD7hC5jX9BCegHpjfp77gh0FRBbq8BqU=
 github.com/gregoryv/web v0.16.0/go.mod h1:DRjHH1V0vwEGHpzEhb9Y3XrQWioSSOGBz6nJMnHQ2NM=
+github.com/gregoryv/web v0.17.1-0.20210502073444-a89bd526ac3a h1:tfGCsejMiyeganYdP4TLF8DJk8Ne3VmmIi5D4nglNs8=
+github.com/gregoryv/web v0.17.1-0.20210502073444-a89bd526ac3a/go.mod h1:DRjHH1V0vwEGHpzEhb9Y3XrQWioSSOGBz6nJMnHQ2NM=
 github.com/gregoryv/wolf v0.8.0 h1:owlCB7pb/qnLte4kB6X2pylOrprokpyohXbXbLaifz0=
 github.com/gregoryv/wolf v0.8.0/go.mod h1:ZoXAExZzPax7lJuck8S/1npj9eROQJM4ocovg3AD9sg=
 github.com/gregoryv/workdir v0.2.0/go.mod h1:qX7yFN0yqysNfEr2F5Tta9+5K8oueS/sqBmdiExBoYA=
