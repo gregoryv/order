@@ -25,6 +25,7 @@ func Test_run(t *testing.T) {
 
 	t.Run("-f no_such_file", func(t *testing.T) {
 		cmd := wolf.NewTCmd("", "-f", "no_such_file")
+		defer cmd.Cleanup()
 		run(cmd)
 		if cmd.ExitCode != 0 {
 			t.Error("exit code", cmd.ExitCode)
@@ -48,10 +49,12 @@ func Test_run(t *testing.T) {
 
 	t.Run("stdin ordered", func(t *testing.T) {
 		cmd := wolf.NewTCmd("", "-f", "patterns")
-		cmd.In.WriteString("internal\nREADME\nchangelog.md\nfile.txt\n")
-		defer cmd.Cleanup()
 		os.WriteFile("patterns", []byte("intern.*\n.*ADME\nchangelog.md"), 0644)
+
+		cmd.In.WriteString("README\nchangelog.md\nfile.txt\ninternal\n")
+		defer cmd.Cleanup()
 		run(cmd)
+
 		if cmd.ExitCode != 0 {
 			t.Error("exit code", cmd.ExitCode)
 		}
