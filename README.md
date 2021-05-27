@@ -1,4 +1,4 @@
-Package [order](https://pkg.go.dev/github.com/gregoryv/order)provides custom sorting of lines.
+Package [order](https://pkg.go.dev/github.com/gregoryv/order) provides custom sorting of lines.
 
 Initial purpose is to sort project directories and its
 files in a more logic manner. Ie. a directory structure is

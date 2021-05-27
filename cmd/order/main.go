@@ -28,6 +28,9 @@ func run(cmd wolf.Command) {
 
 	switch {
 	case help:
+		fmt.Fprint(cmd.Stdout(),
+			"Sort lines on from stdin according to patterns in the order file.\n\n",
+		)
 		cli.WriteUsageTo(cmd.Stdout())
 
 	case filename == "":
