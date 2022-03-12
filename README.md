@@ -7,8 +7,8 @@ terms of layers and concepts.
 
 ## Quick start
 
-    go get -u github.com/gregoryv/order/cmd/...
-    order --help
+    $ go get -u github.com/gregoryv/order/cmd/...
+    $ order --help
 
 ## Example
 
