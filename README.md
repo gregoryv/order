@@ -7,7 +7,7 @@ terms of layers and concepts.
 
 ## Quick start
 
-    $ go get -u github.com/gregoryv/order/cmd/...
+    $ go install github.com/gregoryv/order/cmd/order@latest
     $ order --help
 
 ## Example
