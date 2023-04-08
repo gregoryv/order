@@ -10,6 +10,8 @@ terms of layers and concepts.
     $ go install github.com/gregoryv/order/cmd/order@latest
     $ order --help
 
+![](ls_demo.gif)
+
 ## Example
 
     lines := []string{

@@ -27,7 +27,7 @@ func main() {
 	u.Example(
 		"List files",
 		`  $ export ORDER_PATTERN_FILES=.order,$HOME/.order`,
-		`  $ ls -B --group-directories-first --color -1F | egrep -v "^total" | order`,
+		`  $ ls -B --group-directories-first --color -1F | order`,
 	)
 	cli.Parse()
 
