@@ -22,20 +22,16 @@ func main() {
 
 func run(cmd wolf.Command) {
 	var (
-		cli      = cmdline.NewParser(cmd.Args()...)
-		help     = cli.Flag("-h, --help")
+		cli      = cmdline.NewBasicParser()
 		filename = cli.Option("-f, --pattern-files, $ORDER_PATTERN_FILES",
 			"comma separated list of pattern files",
 		).String("")
 	)
+	u := cli.Usage()
+	u.Preface("Sort lines on from stdin according to patterns in the order file.")
+	cli.Parse()
 
 	switch {
-	case help:
-		fmt.Fprint(cmd.Stdout(),
-			"Sort lines on from stdin according to patterns in the order file.\n\n",
-		)
-		cli.WriteUsageTo(cmd.Stdout())
-
 	case filename == "":
 		// no order, just pass through
 		io.Copy(cmd.Stdout(), cmd.Stdin())
@@ -45,10 +41,13 @@ func run(cmd wolf.Command) {
 
 		// find first valid patterns file
 		files := strings.Split(os.ExpandEnv(filename), ",")
+		fmt.Println(files)
+	findfile:
 		for _, f := range files {
 			if _, err := os.Stat(f); err == nil {
+				fmt.Println("using", f)
 				filename = f
-				break
+				break findfile
 			}
 		}
 		patterns, err := ioutil.ReadFile(filename)
