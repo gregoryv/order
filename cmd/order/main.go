@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"os"
 	"sort"
 	"strings"
 
@@ -23,7 +24,9 @@ func run(cmd wolf.Command) {
 	var (
 		cli      = cmdline.NewParser(cmd.Args()...)
 		help     = cli.Flag("-h, --help")
-		filename = cli.Option("-f", "patterns file").String("")
+		filename = cli.Option("-f, --pattern-files, $ORDER_PATTERN_FILES",
+			"comma separated list of pattern files",
+		).String("")
 	)
 
 	switch {
@@ -39,6 +42,15 @@ func run(cmd wolf.Command) {
 		return
 
 	default:
+
+		// find first valid patterns file
+		files := strings.Split(os.ExpandEnv(filename), ",")
+		for _, f := range files {
+			if _, err := os.Stat(f); err == nil {
+				filename = f
+				break
+			}
+		}
 		patterns, err := ioutil.ReadFile(filename)
 		if err != nil {
 			// no order file
