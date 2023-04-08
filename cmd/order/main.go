@@ -13,14 +13,9 @@ import (
 
 	"github.com/gregoryv/cmdline"
 	"github.com/gregoryv/order"
-	"github.com/gregoryv/wolf"
 )
 
 func main() {
-	run(wolf.NewOSCmd())
-}
-
-func run(cmd wolf.Command) {
 	var (
 		cli      = cmdline.NewBasicParser()
 		filename = cli.Option("-f, --pattern-files, $ORDER_PATTERN_FILES",
@@ -31,21 +26,23 @@ func run(cmd wolf.Command) {
 	u.Preface("Sort lines on from stdin according to patterns in the order file.")
 	cli.Parse()
 
+	run(os.Stdout, os.Stdin, filename)
+}
+
+func run(out io.Writer, in io.Reader, filename string) {
+
 	switch {
 	case filename == "":
 		// no order, just pass through
-		io.Copy(cmd.Stdout(), cmd.Stdin())
+		io.Copy(out, in)
 		return
 
 	default:
-
 		// find first valid patterns file
 		files := strings.Split(os.ExpandEnv(filename), ",")
-		fmt.Println(files)
 	findfile:
 		for _, f := range files {
 			if _, err := os.Stat(f); err == nil {
-				fmt.Println("using", f)
 				filename = f
 				break findfile
 			}
@@ -53,13 +50,12 @@ func run(cmd wolf.Command) {
 		patterns, err := ioutil.ReadFile(filename)
 		if err != nil {
 			// no order file
-			io.Copy(cmd.Stdout(), cmd.Stdin())
-
+			io.Copy(out, in)
 		}
 
 		// read stdin as lines
 		var content bytes.Buffer
-		io.Copy(&content, cmd.Stdin())
+		io.Copy(&content, in)
 		body := bytes.TrimSpace(content.Bytes())
 		lines := strings.Split(string(body), "\n")
 
@@ -69,7 +65,7 @@ func run(cmd wolf.Command) {
 		)
 		sort.Sort(byPattern)
 		for _, line := range lines {
-			fmt.Fprintln(cmd.Stdout(), line)
+			fmt.Fprintln(out, line)
 		}
 	}
 }
