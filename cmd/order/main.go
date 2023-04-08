@@ -19,11 +19,16 @@ func main() {
 	var (
 		cli      = cmdline.NewBasicParser()
 		filename = cli.Option("-f, --pattern-files, $ORDER_PATTERN_FILES",
-			"comma separated list of pattern files",
+			"comma separated list of pattern files, use the first found",
 		).String("")
 	)
 	u := cli.Usage()
 	u.Preface("Sort lines on from stdin according to patterns in the order file.")
+	u.Example(
+		"List files",
+		`  $ export ORDER_PATTERN_FILES=.order,$HOME/.order`,
+		`  $ ls -B --group-directories-first --color -1F | egrep -v "^total" | order`,
+	)
 	cli.Parse()
 
 	run(os.Stdout, os.Stdin, filename)
