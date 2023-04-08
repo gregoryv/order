@@ -7,6 +7,13 @@ import (
 )
 
 func Test_run(t *testing.T) {
+	t.Run("passthrough", func(t *testing.T) {
+		var buf bytes.Buffer
+		run(&buf, strings.NewReader("a"), "")
+		if got := buf.String(); got != "a" {
+			t.Errorf("got %s", got)
+		}
+	})
 
 	t.Run("-f no_such_file", func(t *testing.T) {
 		var buf bytes.Buffer
